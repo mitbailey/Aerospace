@@ -5,6 +5,12 @@ Designed to allow easy calculation of model rocketry related equations.
 Currently calculates the total burn-time, altitude achieved during the boost phase, height gained during the coast phase, the maximum altitude, and the maximum velocity.
 Accepts a variety of configurable variables for the launch vehicle as well as current temperature and pressure.
 
+See code folder for the implementation.
+
+Use
+
+Download and run RocketSuite.exe. 
+
 
 Commands
 
