@@ -4,7 +4,10 @@ Accepts a variety of configurable variables for the launch vehicle as well as cu
 
 ### **Use**
 
-Download and run RocketSuite.exe. 
+Download the "Setup" folder.
+Run setup.exe.
+Rocketry Suite will now be installed under whichever directory was selected during installation (by default this is "C:\Program File(x86)\Mit Bailey\Rocketry Suite".
+Navigate to the install directory and run RocketrySuite.exe or search for it in the Start menu.
 
 ### **Commands**
 
