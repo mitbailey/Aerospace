@@ -2,8 +2,16 @@ Designed to allow easy calculation of model rocketry related equations.
 Currently calculates the total burn-time, altitude achieved during the boost phase, height gained during the coast phase, the maximum altitude, and the maximum velocity.
 Accepts a variety of configurable variables for the launch vehicle as well as current temperature and pressure.
 
-### **Use**
+### **Installation and Use**
+**PLEASE NOTE THAT INSTALLATION OF THIS PROGRAM IS OPTIONAL**
+*While the standalone executable should work, if it doesn't, or if you would like an "installed" program version on your computer, go through the INSTALLATION process. Otherwise, if you would just like a standalone executable to run the program as you please, see the STANDALONE process.*
 
+**STANDALONE PROCESS**
+Download the standalone executable in the "Standalone" folder.
+Place it wherever is convenient.
+Double click to run.
+
+**INSTALLATION PROCESS**
 Download the "Setup" folder.
 Run setup.exe.
 Rocketry Suite will now be installed under whichever directory was selected during installation (by default this is "C:\Program File(x86)\Mit Bailey\Rocketry Suite".
