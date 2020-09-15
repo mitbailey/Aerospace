@@ -17,6 +17,10 @@
 
 #define g 9.80665 // Force of gravity, m/s^2
 #define R 287.05 // Gas constant for dry air, J/(kg.K)
+#define pi 3.1415926535897932384626433832795028841971 // Pi
+
+// Forward declarations
+class Vehicle;
 
 // Mass
 // Cross-sectional Area
@@ -61,6 +65,36 @@ public:
 	double burnTime;
 
 	double calculateBurnTime() { burnTime = impulse / thrust; return burnTime; }
+};
+
+class Parachute {
+public:
+	void updateParachute(double diameter, double coefficientOfDrag, double landingVelocity) {
+		if (diameter >= 0)
+			this->diameter = diameter;
+		if (coefficientOfDrag >= 0)
+			this->coefficientOfDrag = coefficientOfDrag;
+		if (landingVelocity >= 0)
+			this->landingVelocity = landingVelocity;
+	}
+
+	// Calculates the diameter required to achieve the desired descent speed.
+	double calculateDiameter(Vehicle& vehicle);
+
+	// Calculates the speed given the diameter.
+	double calculateDescentSpeed(Vehicle& vehicle);
+
+	void displayParachute() {
+		std::cout << "Diameter: " << diameter << std::endl;
+		std::cout << "Coefficient of Drag: " << coefficientOfDrag << std::endl;
+		std::cout << "Landing Velocity: " << landingVelocity << std::endl;
+	}
+
+	//diameter = sqrt( (8 vehicle.mass * g) / (3.14 * airDensity * parachuteDragCoefficient * maxDescentSpeed^2) )
+
+	double coefficientOfDrag = 0.75; // Assumption is this is parasheet (estes rocket). Use 1.5 for a real dome-shaped 'chute.
+	double diameter;
+	double landingVelocity = 3; // Maximum speed we want the rocket to be hitting the ground.
 };
 
 // Vehicle phases:
@@ -132,7 +166,9 @@ public:
 		calculateAltitudeMax();
 		calculateTimeMECOToAP();
 		calculateTimeAPToGround();
+		calculateTimeAPToGroundParachute();
 		calculateTimeOfFlight();
+		parachute.calculateDescentSpeed(*this);
 	}
 
 	void updateConditions(double temp, double pres) {
@@ -153,24 +189,42 @@ public:
 		std::cout << "Coefficient of Drag: " << dragCoefficient << std::endl;
 		std::cout << "Mass empty: " << mass.empty << std::endl;
 		std::cout << "Mass loaded: " << mass.loaded << std::endl;
+		std::cout << "Mass average: " << mass.average << std::endl;
+		std::cout << "Mass average: " << mass.calculateAverageMass() << std::endl;
 		std::cout << "Engine mass empty: " << engine.mass.empty << std::endl;
 		std::cout << "Engine mass loaded: " << engine.mass.loaded << std::endl;
+		std::cout << "Engine mass average: " << engine.mass.calculateAverageMass() << std::endl;
 		std::cout << "Cross-sectional area: " << area << std::endl;
 		std::cout << "Engine impulse: " << engine.impulse << std::endl;
 		std::cout << "Engine thrust: " << engine.thrust << std::endl;
+		std::cout << "Parachute diameter: " << parachute.diameter << std::endl;
+		std::cout << "Parachute Coefficient of Drag: " << parachute.coefficientOfDrag << std::endl;
 	}
 
 	void displayResults(){
 		std::cout << std::endl;
 		std::cout << "RUNNING SIMULATION..." << std::endl;
-		std::cout << "Altitude achieved during boost phase: " << altitudeBoost << std::endl;
-		std::cout << "Height gained during coast phase: " << heightCoast << std::endl;
-		std::cout << "Maximum altitude: " << altitudeMax << std::endl;
-		std::cout << "Maximum velocity: " << velocityMax << std::endl;
-		std::cout << "Time to MECO: " << engine.burnTime << std::endl;
-		std::cout << "Time, MECO to apogee: " << timeMECOToAP << std::endl;
-		std::cout << "Time, apogee to ground (no parachute): " << timeAPToGround << std::endl;
-		std::cout << "Total time of flight: " << timeOfFlight << std::endl;
+		std::cout << "=====================================================================" << std::endl;
+		std::cout << "ALTITUDE~" << std::endl;
+		std::cout << "At MECO: " << altitudeBoost << std::endl;
+		std::cout << "Gained during coast phase: +" << heightCoast << std::endl;
+		std::cout << "At apogee: " << altitudeMax << std::endl;
+		std::cout << std::endl;
+
+		std::cout << "VELOCITY~" << std::endl;
+		std::cout << "Maximum: " << velocityMax << std::endl;
+		std::cout << "Landing: " << parachute.landingVelocity << std::endl;
+		std::cout << std::endl;
+
+		std::cout << "TIME~" << std::endl;
+		std::cout << "To MECO: " << engine.burnTime << std::endl;
+		std::cout << "MECO to apogee: " << timeMECOToAP << std::endl;
+		std::cout << "Total aloft: " << timeOfFlight << std::endl;
+		std::cout << "Apogee to ground (no parachute): " << timeAPToGround << std::endl;
+		std::cout << "Apogee to ground (parachute)*: " << timeAPToGroundParachute << std::endl;
+		std::cout << "*Assuming the parachute opens at apogee. Subtract from this value the seconds the parachute takes to deploy." << std::endl;
+		std::cout << std::endl;
+		std::cout << "=====================================================================" << std::endl;
 		std::cout << std::endl;
 	}
 
@@ -178,6 +232,7 @@ public:
 
 	Mass mass;
 	Engine engine;
+	Parachute parachute;
 
 	double k;
 	double q;
@@ -192,6 +247,7 @@ public:
 
 	double timeMECOToAP;
 	double timeAPToGround;
+	double timeAPToGroundParachute;
 	double timeOfFlight;
 
 	// Functions
@@ -208,6 +264,7 @@ public:
 	// New
 	double calculateTimeMECOToAP() { timeMECOToAP = velocityMax / g; return timeMECOToAP; }
 	double calculateTimeAPToGround() { timeAPToGround = sqrt((2 * altitudeMax) / g); return timeAPToGround; }
+	double calculateTimeAPToGroundParachute() { timeAPToGroundParachute = altitudeMax / parachute.landingVelocity; return timeAPToGroundParachute; }
 	double calculateTimeOfFlight() { timeOfFlight = engine.burnTime + timeMECOToAP + timeAPToGround; return timeOfFlight; }
 };
 
@@ -234,3 +291,15 @@ double Vehicle::calculateAltitudeMax() {
 	altitudeMax = altitudeBoost + heightCoast;
 	return altitudeMax;
 }
+
+// Calculates the diameter required to achieve the desired descent speed.
+double Parachute::calculateDiameter(Vehicle& vehicle) {
+	diameter = std::sqrt((8 * vehicle.mass.loaded * g) / (pi * vehicle.conditions.airDensity * coefficientOfDrag * (landingVelocity * landingVelocity)));
+	return diameter;
+};
+
+// Calculates the speed given the diameter.
+double Parachute::calculateDescentSpeed(Vehicle& vehicle) {
+	landingVelocity = std::sqrt((8 * vehicle.mass.loaded * g) / (pi * vehicle.conditions.airDensity * coefficientOfDrag * (diameter * diameter)));
+	return landingVelocity;
+};

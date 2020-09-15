@@ -31,11 +31,19 @@ void displayHelp() {
 	std::cout << ".help - Display available commands and what they do." << std::endl;
 	std::cout << ".help units - Display required units." << std::endl;
 	std::cout << ".help <command> - Display detailed information about that command." << std::endl;
+	std::cout << std::endl;
+
 	std::cout << ".run - Run the simulation given the current launch vehicle configuration and weather conditions." << std::endl;
 	std::cout << ".set vehicle - Creates a new launch vehicle with the relevant parameters." << std::endl;
 	std::cout << ".set conditions - Creates a new set of weather conditions." << std::endl;
+	std::cout << ".set parachute - Sets the parameters of the vehicle's parachute." << std::endl;
 	std::cout << ".display vehicle - Displays the current launch vehicle." << std::endl;
 	std::cout << ".display conditions - Displays the current weather conditions." << std::endl;
+	std::cout << ".display parachute - Displays the current parachute configuration." << std::endl;
+	std::cout << ".calculate parachute diameter - Uses the current parachute configuration to determine optimal diameter." << std::endl;
+	std::cout << ".calculate parachute velocity - Uses the current parachute configuration to determine landing velocity." << std::endl;
+	std::cout << std::endl;
+
 	std::cout << ".credits - Shows the credits for the program." << std::endl;
 	std::cout << ".exit - Closes the program." << std::endl;
 	std::cout << std::endl;
@@ -90,6 +98,17 @@ void displayHelp(std::string command) {
 		std::cout << std::endl;
 		std::cout << "Parameters: " << std::endl;
 		std::cout << "Required... <Temperature> <Pressure>" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << std::endl;
+	}
+	else if (command == "set parachute") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Sets the parameters of the vehicle's parachute." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "Required... <Diameter> <Coefficient of Drag> <Desired Landing Velocity>" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << "Notes...    To omit one or more arguments, enter a negative value for that argument." << std::endl;
 		std::cout << std::endl;
 	}
 	else if (command == "display vehicle") {
@@ -104,6 +123,33 @@ void displayHelp(std::string command) {
 	else if (command == "display conditions") {
 		std::cout << "Description: " << std::endl;
 		std::cout << "Displays the current weather conditions." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "Required... N/A" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << std::endl;
+	}
+	else if (command == "display parachute") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Displays the current parachute configuration." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "Required... N/A" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << std::endl;
+	}
+	else if (command == "calculate parachute diameter") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Uses the current parachute configuration to determine optimal diameter." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "Required... N/A" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << std::endl;
+	}
+	else if (command == ".calculate parachute velocity") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Uses the current parachute configuration to determine landing velocity." << std::endl;
 		std::cout << std::endl;
 		std::cout << "Parameters: " << std::endl;
 		std::cout << "Required... N/A" << std::endl;
@@ -197,30 +243,34 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 		// .set conditions TEMPERATURE PRESSURE
 		// .set vehicle A B C D E F G
 		// .set vehicle A B C D E F G H
-
-		if (tokens.size() == 8) {
-			// Didn't receive a coefficient of drag, so use a reasonable default value of 0.75.
-			launchVehicle.updateVehicle(std::stod(tokens.at(2)), std::stod(tokens.at(4)) + std::stod(tokens.at(2)),
-				std::stod(tokens.at(4)) - std::stod(tokens.at(3)), std::stod(tokens.at(4)), std::stod(tokens.at(5)),
-				std::stod(tokens.at(6)), std::stod(tokens.at(7)), 0.75, weather);
+		if (tokens.at(1) == "vehicle" || tokens.at(1) == "conditions") {
+			if (tokens.size() == 8) {
+				// Didn't receive a coefficient of drag, so use a reasonable default value of 0.75.
+				launchVehicle.updateVehicle(std::stod(tokens.at(2)), std::stod(tokens.at(4)) + std::stod(tokens.at(2)),
+					std::stod(tokens.at(4)) - std::stod(tokens.at(3)), std::stod(tokens.at(4)), std::stod(tokens.at(5)),
+					std::stod(tokens.at(6)), std::stod(tokens.at(7)), 0.75, weather);
+			}
+			else if (tokens.size() == 9) {
+				launchVehicle.updateVehicle(std::stod(tokens.at(2)), std::stod(tokens.at(4)) + std::stod(tokens.at(2)),
+					std::stod(tokens.at(4)) - std::stod(tokens.at(3)), std::stod(tokens.at(4)), std::stod(tokens.at(5)),
+					std::stod(tokens.at(6)), std::stod(tokens.at(7)), std::stod(tokens.at(8)), weather);
+			}
+			else if (tokens.size() == 4) {
+				// Wants to set conditions.
+				launchVehicle.updateConditions(std::stod(tokens.at(2)), std::stod(tokens.at(3)));
+			}
+			else if (tokens.size() < 4) {
+				std::cout << "[userinterface.hpp/userInputHandler] Error: Too few arguments entered for .set command." << std::endl;
+			}
+			else if (tokens.size() < 8 && tokens.size() > 4) {
+				std::cout << "[userinterface.hpp/userInputHandler] Error: Invalid number of arguments entered for .set command." << std::endl;
+			}
+			else {
+				std::cout << "[userinterface.hpp/userInputHandler] Error: Too many arguments entered for .set command. Try entering less arguments." << std::endl;
+			}
 		}
-		else if (tokens.size() == 9) {
-			launchVehicle.updateVehicle(std::stod(tokens.at(2)), std::stod(tokens.at(4)) + std::stod(tokens.at(2)),
-				std::stod(tokens.at(4)) - std::stod(tokens.at(3)), std::stod(tokens.at(4)), std::stod(tokens.at(5)),
-				std::stod(tokens.at(6)), std::stod(tokens.at(7)), std::stod(tokens.at(8)), weather);
-		}
-		else if (tokens.size() == 4) {
-			// Wants to set conditions.
-			launchVehicle.updateConditions(std::stod(tokens.at(2)), std::stod(tokens.at(3)));
-		}
-		else if (tokens.size() < 4) {
-			std::cout << "[userinterface.hpp/userInputHandler] Error: Too few arguments entered for .set command." << std::endl;
-		}
-		else if (tokens.size() < 8 && tokens.size() > 4) {
-			std::cout << "[userinterface.hpp/userInputHandler] Error: Invalid number of arguments entered for .set command." << std::endl;
-		}
-		else {
-			std::cout << "[userinterface.hpp/userInputHandler] Error: Too many arguments entered for .set command. Try entering less arguments." << std::endl;
+		else if (tokens.at(1) == "parachute") {
+			launchVehicle.parachute.updateParachute(std::stod(tokens.at(2)), std::stod(tokens.at(3)), std::stod(tokens.at(4)));
 		}
 	}
 	else if (tokens.at(0) == ".display") {
@@ -230,8 +280,21 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 		else if (tokens.at(1) == "conditions") {
 			launchVehicle.displayConditions();
 		}
+		else if (tokens.at(1) == "parachute") {
+			launchVehicle.parachute.displayParachute();
+		}
 		else {
 			std::cout << "[userinterface.hpp/userInputHandler] Error: Invalid .display command. Try .display vehicle or .display conditions." << std::endl;
+		}
+	}
+	else if (tokens.at(0) == ".calculate") {
+		if (tokens.at(1) == "parachute") {
+			if (tokens.at(2) == "diameter") {
+				launchVehicle.parachute.calculateDiameter(launchVehicle);
+			}
+			else if (tokens.at(2) == "velocity") {
+				launchVehicle.parachute.calculateDescentSpeed(launchVehicle);
+			}
 		}
 	}
 	else if (tokens.at(0) == ".credits") {
