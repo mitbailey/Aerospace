@@ -25,7 +25,7 @@ Navigate to the install directory and run RocketrySuite.exe or search for it in 
   
 	.help <command> - Display detailed information about that command.
   
-  .run - Run the simulation given the current launch vehicle configuration and weather conditions.
+  	.run - Run the simulation given the current launch vehicle configuration and weather conditions.
   
 	.set vehicle - Creates a new launch vehicle with the relevant parameters.
   
