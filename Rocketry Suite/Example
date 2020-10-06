@@ -1,0 +1,63 @@
+This file is designed to give the user a set of example inputs and expected output to assist in learning valid input for the program.
+
+Test Case: Estes Farside w/ C6-7
+
+## **INPUT (one line at a time)**
+
+.set vehicle 0.045 0.01248 0.0269 0.000506707479 10 15.3
+.set parachute -1 -1 3 16
+.calculate parachute diameter
+.update conditions windspeed 0
+.calculate angle
+.run 
+
+
+## **OUTPUT**
+
+CURRENT CONDITIONS
+Temperature: 273.15
+Pressure: 101325
+Windspeed: 0
+
+CURRENT CONFIGURATION
+Coefficient of Drag: 0.75
+Mass empty: 0.045
+Mass loaded: 0.0719
+Mass average: 0.05845
+Mass average: 0.05845
+Engine mass empty: 0.01442
+Engine mass loaded: 0.0269
+Engine mass average: 0.02066
+Cross-sectional area: 0.000506707
+Engine impulse: 10
+Engine thrust: 15.3
+Parachute diameter: 0.453695
+Parachute Coefficient of Drag: 0.75
+Launch angle: 45
+
+RUNNING SIMULATION...
+=====================================================================
+ALTITUDE~
+At MECO: 35.4902
+Gained during coast phase: +202.868
+At apogee: 238.358
+At deployment: 322.658
+
+DISTANCE~
+Range: 529.943
+Drift: 0
+
+VELOCITY~
+Maximum: 143.651
+Deployment: 48.9202
+Landing: 3
+
+TIME~
+Launch to MECO: 0.653595
+MECO to apogee: 10.3579
+Apogee to ground (no parachute): N/A
+Apogee to deployment: 4.98848
+Deployment to ground: 107.553
+Total aloft: 123.553
+
+=====================================================================
