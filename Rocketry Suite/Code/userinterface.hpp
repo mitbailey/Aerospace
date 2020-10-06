@@ -15,7 +15,7 @@
 #include "implementation.hpp"
 
 void introduction() {
-	std::cout << "--- MODEL ROCKETRY CALCULATION SUITE ---" << std::endl;
+	std::cout << "--- MODEL ROCKETRY CALCULATION SUITE V2 ---" << std::endl;
 	std::cout << "Copyright Mit Bailey 2020" << std::endl;
 	std::cout << "mitbailey.com" << std::endl;
 	std::cout << std::endl;
@@ -37,11 +37,15 @@ void displayHelp() {
 	std::cout << ".set vehicle - Creates a new launch vehicle with the relevant parameters." << std::endl;
 	std::cout << ".set conditions - Creates a new set of weather conditions." << std::endl;
 	std::cout << ".set parachute - Sets the parameters of the vehicle's parachute." << std::endl;
+	std::cout << ".set angle - Manually sets the launch angle of the vehicle." << std::endl;
 	std::cout << ".display vehicle - Displays the current launch vehicle." << std::endl;
 	std::cout << ".display conditions - Displays the current weather conditions." << std::endl;
-	std::cout << ".display parachute - Displays the current parachute configuration." << std::endl;
+	std::cout << ".display parachute - Displays the current parachute configuration." << std::endl;	
+	std::cout << ".display angle - Displays the current launch angle." << std::endl;
 	std::cout << ".calculate parachute diameter - Uses the current parachute configuration to determine optimal diameter." << std::endl;
 	std::cout << ".calculate parachute velocity - Uses the current parachute configuration to determine landing velocity." << std::endl;
+	std::cout << ".calculate angle - Sets the launch angle to what will return the rocket to the launchsite." << std::endl;
+	std::cout << ".update - Can be used to change a single value of a class." << std::endl;
 	std::cout << std::endl;
 
 	std::cout << ".credits - Shows the credits for the program." << std::endl;
@@ -75,6 +79,8 @@ void displayHelp(std::string command) {
 	else if (command == "units") {
 		std::cout << "Mass -------- Kilograms" << std::endl;
 		std::cout << "Length ------ Meters" << std::endl;
+		std::cout << "Distance ---- Meters" << std::endl;
+		std::cout << "Velocity ---- Meters per Second" << std::endl;
 		std::cout << "Pressure ---- Pascals" << std::endl;
 		std::cout << "Temperature - Kelvin" << std::endl;
 		std::cout << "Area -------- Square Meters" << std::endl;
@@ -89,7 +95,7 @@ void displayHelp(std::string command) {
 		std::cout << std::endl;
 		std::cout << "Parameters: " << std::endl;
 		std::cout << "Required... <Vehicle Mass (Empty)> <Propellant Mass> <Engine Mass (Loaded)> <Cross-Sectional Area> <Engine Impulse> <Engine Thrust>" << std::endl;
-		std::cout << "Optional... <Coefficient of Drag>" << std::endl;
+		std::cout << "Optional... <Coefficient of Drag>, <Angle>" << std::endl;
 		std::cout << std::endl;
 	}
 	else if (command == "set conditions") {
@@ -98,7 +104,7 @@ void displayHelp(std::string command) {
 		std::cout << std::endl;
 		std::cout << "Parameters: " << std::endl;
 		std::cout << "Required... <Temperature> <Pressure>" << std::endl;
-		std::cout << "Optional... N/A" << std::endl;
+		std::cout << "Optional... <Windspeed>" << std::endl;
 		std::cout << std::endl;
 	}
 	else if (command == "set parachute") {
@@ -106,9 +112,19 @@ void displayHelp(std::string command) {
 		std::cout << "Sets the parameters of the vehicle's parachute." << std::endl;
 		std::cout << std::endl;
 		std::cout << "Parameters: " << std::endl;
-		std::cout << "Required... <Diameter> <Coefficient of Drag> <Desired Landing Velocity>" << std::endl;
+		std::cout << "Required... <Diameter> <Coefficient of Drag> <Desired Landing Velocity> <Deployment Time>" << std::endl;
 		std::cout << "Optional... N/A" << std::endl;
 		std::cout << "Notes...    To omit one or more arguments, enter a negative value for that argument." << std::endl;
+		std::cout << std::endl;
+	}
+	else if (command == "set angle") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Sets the launch angle of the vehicle." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "Required... <Launch Angle>" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << "Notes...    Angle is only used in range and drift calculations." << std::endl;
 		std::cout << std::endl;
 	}
 	else if (command == "display vehicle") {
@@ -137,6 +153,24 @@ void displayHelp(std::string command) {
 		std::cout << "Required... N/A" << std::endl;
 		std::cout << "Optional... N/A" << std::endl;
 		std::cout << std::endl;
+	}	
+	else if (command == "display angle") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Displays the current launch angle." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "Required... N/A" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << std::endl;
+	}
+	else if (command == "calculate angle") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Sets the launch angle to what will return the rocket to the launchsite." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "Required... N/A" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << std::endl;
 	}
 	else if (command == "calculate parachute diameter") {
 		std::cout << "Description: " << std::endl;
@@ -147,13 +181,48 @@ void displayHelp(std::string command) {
 		std::cout << "Optional... N/A" << std::endl;
 		std::cout << std::endl;
 	}
-	else if (command == ".calculate parachute velocity") {
+	else if (command == "calculate parachute velocity") {
 		std::cout << "Description: " << std::endl;
 		std::cout << "Uses the current parachute configuration to determine landing velocity." << std::endl;
 		std::cout << std::endl;
 		std::cout << "Parameters: " << std::endl;
 		std::cout << "Required... N/A" << std::endl;
 		std::cout << "Optional... N/A" << std::endl;
+		std::cout << std::endl;
+	} // .update - Can be used to change a single value of a class.
+	else if (command == "update") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Can be used to change a single value of a class." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "	conditions" << std::endl;
+		std::cout << "		<temperature> <pressure> <windspeed>" << std::endl;
+		std::cout << "		temperature <value>" << std::endl;
+		std::cout << "		pressure <value>" << std::endl;
+		std::cout << "		windspeed <value>" << std::endl;
+		std::cout << "	parachute" << std::endl;
+		std::cout << "		diameter <value>" << std::endl;
+		std::cout << "		dragCoefficient <value>" << std::endl;
+		std::cout << "		landingVelocity <value>" << std::endl;
+		std::cout << "		deploymentTime <value>" << std::endl;
+		std::cout << "	engine" << std::endl;
+		std::cout << "		impulse <value>" << std::endl;
+		std::cout << "		thrust <value>" << std::endl;
+		std::cout << "		burntime <value>" << std::endl;
+		std::cout << "		mass" << std::endl;
+		std::cout << "			loaded <value>" << std::endl;
+		std::cout << "			empty <value>" << std::endl;
+		std::cout << "	vehicle" << std::endl;
+		std::cout << "		area <value>" << std::endl;
+		std::cout << "		dragCoefficient <value>" << std::endl;
+		std::cout << "		mass" << std::endl;
+		std::cout << "			loaded <value>" << std::endl;
+		std::cout << "			empty <value>" << std::endl;
+		std::cout << std::endl;
+		std::cout << "Examples:" << std::endl;
+		std::cout << ".update engine mass loaded 2.5" << std::endl;
+		std::cout << ".update conditions 275 101256" << std::endl;
+		std::cout << ".update conditions temperature 275" << std::endl;
 		std::cout << std::endl;
 	}
 	else if (command == "exit") {
@@ -243,7 +312,16 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 		// .set conditions TEMPERATURE PRESSURE
 		// .set vehicle A B C D E F G
 		// .set vehicle A B C D E F G H
-		if (tokens.at(1) == "vehicle" || tokens.at(1) == "conditions") {
+		if (tokens.size() < 2) {
+			std::cout << "[userinterface.hpp/userInputHandler] Error: Too few arguments entered for .set command." << std::endl;
+		}
+		else if (tokens.size() < 8 && tokens.size() > 6) {
+			std::cout << "[userinterface.hpp/userInputHandler] Error: Invalid number of arguments entered for .set command." << std::endl;
+		}
+		else if (tokens.size() > 9) {
+			std::cout << "[userinterface.hpp/userInputHandler] Error: Too many arguments entered for .set command. Try entering less arguments." << std::endl;
+		}
+		if (tokens.at(1) == "vehicle") {
 			if (tokens.size() == 8) {
 				// Didn't receive a coefficient of drag, so use a reasonable default value of 0.75.
 				launchVehicle.updateVehicle(std::stod(tokens.at(2)), std::stod(tokens.at(4)) + std::stod(tokens.at(2)),
@@ -255,22 +333,21 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 					std::stod(tokens.at(4)) - std::stod(tokens.at(3)), std::stod(tokens.at(4)), std::stod(tokens.at(5)),
 					std::stod(tokens.at(6)), std::stod(tokens.at(7)), std::stod(tokens.at(8)), weather);
 			}
-			else if (tokens.size() == 4) {
-				// Wants to set conditions.
+		}
+		else if (tokens.at(1) == "conditions") {
+			if (tokens.size() == 4) {
 				launchVehicle.updateConditions(std::stod(tokens.at(2)), std::stod(tokens.at(3)));
 			}
-			else if (tokens.size() < 4) {
-				std::cout << "[userinterface.hpp/userInputHandler] Error: Too few arguments entered for .set command." << std::endl;
-			}
-			else if (tokens.size() < 8 && tokens.size() > 4) {
-				std::cout << "[userinterface.hpp/userInputHandler] Error: Invalid number of arguments entered for .set command." << std::endl;
-			}
-			else {
-				std::cout << "[userinterface.hpp/userInputHandler] Error: Too many arguments entered for .set command. Try entering less arguments." << std::endl;
+			else if (tokens.size() == 5) {
+				launchVehicle.updateConditions(std::stod(tokens.at(2)), std::stod(tokens.at(3)), std::stod(tokens.at(4)));
 			}
 		}
 		else if (tokens.at(1) == "parachute") {
-			launchVehicle.parachute.updateParachute(std::stod(tokens.at(2)), std::stod(tokens.at(3)), std::stod(tokens.at(4)));
+			launchVehicle.parachute.updateParachute(std::stod(tokens.at(2)), 
+				std::stod(tokens.at(3)), std::stod(tokens.at(4)), std::stod(tokens.at(5)));
+		}
+		else if (tokens.at(1) == "angle") {
+			launchVehicle.launchAngle = std::stod(tokens.at(2));
 		}
 	}
 	else if (tokens.at(0) == ".display") {
@@ -283,6 +360,9 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 		else if (tokens.at(1) == "parachute") {
 			launchVehicle.parachute.displayParachute();
 		}
+		else if (tokens.at(1) == "angle") {
+			launchVehicle.displayAngle();
+		}
 		else {
 			std::cout << "[userinterface.hpp/userInputHandler] Error: Invalid .display command. Try .display vehicle or .display conditions." << std::endl;
 		}
@@ -294,6 +374,77 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 			}
 			else if (tokens.at(2) == "velocity") {
 				launchVehicle.parachute.calculateDescentSpeed(launchVehicle);
+			}
+		}
+		else if (tokens.at(1) == "angle") {
+			launchVehicle.calculateLaunchAngle();
+		}
+	}
+	else if (tokens.at(0) == ".update") {
+		if (tokens.at(1) == "conditions") {
+			if (tokens.size() == 2) {
+				launchVehicle.updateConditions(stod(tokens.at(3)), stod(tokens.at(4)));
+			}
+			else if (tokens.at(2) == "temperature") {
+				launchVehicle.updateTemperature(stod(tokens.at(3)));
+			}
+			else if (tokens.at(2) == "pressure") {
+				launchVehicle.updatePressure(stod(tokens.at(3)));
+			} 
+			else if (tokens.at(2) == "windspeed") {
+				launchVehicle.updateWindspeed(stod(tokens.at(3)));
+			}
+		}
+		else if (tokens.at(1) == "parachute") {
+			if (tokens.at(2) == "diameter") {
+				launchVehicle.parachute.updateDiamater(stod(tokens.at(2)));
+				launchVehicle.parachute.calculateDescentSpeed(launchVehicle);
+			}
+			else if (tokens.at(2) == "dragCoefficient") {
+				launchVehicle.parachute.updateDragCoefficient(stod(tokens.at(2)));
+				launchVehicle.parachute.calculateDescentSpeed(launchVehicle);
+			}
+			else if (tokens.at(2) == "landingVelocity") {
+				launchVehicle.parachute.updateLandingVelocity(stod(tokens.at(2)));
+				launchVehicle.parachute.calculateDiameter(launchVehicle);
+			}
+			else if (tokens.at(2) == "deploymentTime") {
+				launchVehicle.parachute.updateDeploymentTime(stod(tokens.at(2)));
+			}
+		}
+		else if (tokens.at(1) == "engine") {
+			if (tokens.at(2) == "impulse") {
+				launchVehicle.engine.updateImpulse(stod(tokens.at(3)));
+			}
+			else if (tokens.at(2) == "thrust") {
+				launchVehicle.engine.updateImpulse(stod(tokens.at(3)));
+			}
+			else if (tokens.at(2) == "burntime") {
+				launchVehicle.engine.updateImpulse(stod(tokens.at(3)));
+			}
+			else if (tokens.at(2) == "mass") {
+				if (tokens.at(3) == "loaded") {
+					launchVehicle.engine.mass.updateLoaded(stod(tokens.at(4)));
+				}
+				else if (tokens.at(3) == "empty") {
+					launchVehicle.engine.mass.updateEmpty(stod(tokens.at(4)));
+				}
+			}
+		}
+		else if (tokens.at(1) == "vehicle") {
+			if (tokens.at(2) == "area") {
+				launchVehicle.updateArea(stod(tokens.at(3)));
+			}
+			else if (tokens.at(2) == "dragCoefficient") {
+				launchVehicle.updateDragCoefficient(stod(tokens.at(3)));
+			}
+			else if (tokens.at(2) == "mass") {
+				if (tokens.at(3) == "loaded") {
+					launchVehicle.mass.updateLoaded(stod(tokens.at(4)));
+				}
+				else if (tokens.at(3) == "empty") {
+					launchVehicle.mass.updateEmpty(stod(tokens.at(4)));
+				}
 			}
 		}
 	}
