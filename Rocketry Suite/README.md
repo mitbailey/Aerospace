@@ -19,23 +19,41 @@ Navigate to the install directory and run RocketrySuite.exe or search for it in 
 
 ### **Commands**
 
-.help - Display available commands and what they do.
-
-.help units - Display required units.
-
-.help <command> - Display detailed information about that command.
-
-.run - Run the simulation given the current launch vehicle configuration and weather conditions.
-
-.set vehicle - Creates a new launch vehicle with the relevant parameters.
-
-.set conditions - Creates a new set of weather conditions.
-
-.display vehicle - Displays the current launch vehicle.
-
-.display conditions - Displays the current weather conditions.
-
-.exit - Closes the program.
+	.help - Display available commands and what they do.
+  
+	.help units - Display required units.
+  
+	.help <command> - Display detailed information about that command.
+  
+  .run - Run the simulation given the current launch vehicle configuration and weather conditions.
+  
+	.set vehicle - Creates a new launch vehicle with the relevant parameters.
+  
+	.set conditions - Creates a new set of weather conditions.
+  
+	set parachute - Sets the parameters of the vehicle's parachute.
+  
+	.set angle - Manually sets the launch angle of the vehicle.
+  
+	.display vehicle - Displays the current launch vehicle.
+  
+	.display conditions - Displays the current weather conditions.
+  
+	.display parachute - Displays the current parachute configuration.
+  
+	.display angle - Displays the current launch angle.
+  
+	.calculate parachute diameter - Uses the current parachute configuration to determine optimal diameter.
+  
+	.calculate parachute velocity - Uses the current parachute configuration to determine landing velocity.
+  
+	.calculate angle - Sets the launch angle to what will return the rocket to the launchsite.
+  
+	.update - Can be used to change a single value of a class.
+  
+	.credits - Shows the credits for the program.
+  
+	.exit - Closes the program.
 
 ### **About**
 Written in C++.
