@@ -58,3 +58,24 @@ Navigate to the install directory and run RocketrySuite.exe or search for it in 
 ### **About**
 Written in C++.
 See code folder for details.
+
+### **Changelog**
+Version 2
+	- Incorporates manual launch angle specification and adjusts all calculations accordingly.
+	- Added calculation to find range (change in position from launchsite to parachute deployment).
+	- Added parachute deployment value in mission elapsed time.
+	- Added calculation to find drift (distance traveled after parachute deployment due to wind).
+	- Added windspeed value to conditions.
+	- Added appropriate commands to allow user interaction with new features.
+	- Refactored code.
+
+Version 1 Update 1
+	- Added parachute class.
+	- Program now calculates time to reach the ground after the parachute deploys (assuming deployment is at apoapsis).
+	- Added parachute related set and display commands.
+
+Version 1
+	- Initial commit.
+	- Accurately predicts the trajectory of a model rocket given appropriate inputs assuming launch angle is equal to 90' and a windless environment.
+	- Allows user to set custom conditions and launch vehicle.
+	- Displays velocity, time, and altitude values when the simulation is run.
