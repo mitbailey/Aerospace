@@ -25,6 +25,37 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
+// Test Case: 3d Printed Egg Rocket (1x D12-7)
+// .set vehicle 0.2633 0.02497 0.044 0.004418 20 32.9
+// .set parachute -1 -1 3 7
+// .calculate parachute diameter
+// .update conditions windspeed 2
+// .calculate angle
+// .run
+
+// Test Case: 3d Printed Egg Rocket (4x C6-7)
+// .set vehicle 0.2633 0.04992 0.1076 0.004418 40 61.2
+// .set parachute -1 -1 3 7
+// .calculate parachute diameter
+// .update conditions windspeed 2
+// .calculate angle
+// .run
+
+// Test Case: 3d Printed Egg Rocket (1x C6-7)
+// .set vehicle 0.2633 0.01248 0.0269 0.004418 10 15.3
+// .set parachute -1 -1 3 7 
+// .calculate parachute diameter
+// .update conditions windspeed 2
+// .calculate angle
+// .run  
+
+// Test Case: Custom 2
+// .set vehicle 0.18 0.011 0.0345 0.0762 10 22.1
+
+// Test Case: Custom Rocket
+// .set vehicle 0.18 0.01248 0.0269 0.000506707479 10 15.3
+// .set parachute -1 -1 3 7
+
 // Test Case: Estes Farside w/ C6-7
 // .set vehicle 0.045 0.01248 0.0269 0.000506707479 10 15.3
 // .set parachute -1 -1 3 16

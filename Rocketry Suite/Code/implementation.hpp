@@ -25,6 +25,11 @@
 
 // Forward declarations
 class Vehicle;
+double areaOfACircle(double diameter);
+
+double areaOfACircle(double diameter) {
+	return (pi * pow((diameter / 2), 2));
+}
 
 class Conditions {
 public:
@@ -72,6 +77,8 @@ public:
 
 class Engine {
 public:
+	void updateEngine(double impl, double thrs, double burn, double load, double empt);
+
 	void updateImpulse(double value) { impulse = value; }
 
 	void updateThrust(double value) { thrust = value; }
@@ -86,6 +93,14 @@ public:
 
 	double calculateBurnTime() { burnTime = impulse / thrust; return burnTime; }
 };
+
+void Engine::updateEngine(double impl, double thrs, double burn, double load, double empt) {
+	impulse = impl;
+	thrust = thrs;
+	burnTime = burn;
+	mass.loaded = load;
+	mass.empty = empt;
+}
 
 class Parachute {
 public:
@@ -164,6 +179,10 @@ public:
 	void updateConditions(double temp, double pres) { conditions.updateConditions(temp, pres); performCalculations(); }
 
 	void updateConditions(double temp, double pres, double wind) { conditions.updateConditions(temp, pres, wind); performCalculations(); }
+
+	void updateParachute(double diam, double drag, double land, double time) { parachute.updateParachute(diam, drag, land, time); performCalculations(); }
+
+	void updateEngine(double impl, double thrs, double burn, double load, double empt) { engine.updateEngine(impl, thrs, burn, load, empt); performCalculations(); }
 
 	void updateTemperature(double value) { conditions.temperature = value; performCalculations(); }
 
@@ -336,7 +355,6 @@ void Vehicle::displayConfiguration() {
 	std::cout << "Mass empty: " << mass.empty << std::endl;
 	std::cout << "Mass loaded: " << mass.loaded << std::endl;
 	std::cout << "Mass average: " << mass.average << std::endl;
-	std::cout << "Mass average: " << mass.calculateAverageMass() << std::endl;
 	std::cout << "Engine mass empty: " << engine.mass.empty << std::endl;
 	std::cout << "Engine mass loaded: " << engine.mass.loaded << std::endl;
 	std::cout << "Engine mass average: " << engine.mass.calculateAverageMass() << std::endl;
@@ -374,10 +392,56 @@ void Vehicle::displayResults() {
 	std::cout << "TIME~" << std::endl;
 	std::cout << "Launch to MECO: " << engine.burnTime << std::endl;
 	std::cout << "MECO to apogee: " << timeMECOToAPA << std::endl;
-	std::cout << "Apogee to ground (no parachute): " << "N/A" << std::endl;
+	///std::cout << "Apogee to ground (no parachute): " << "N/A" << std::endl;
 	std::cout << "Apogee to deployment: " << timeAPToDeploymentA << std::endl;
 	std::cout << "Deployment to ground: " << timeDeploymentToGroundA << std::endl;
 	std::cout << "Total aloft: " << timeOfFlightA << std::endl;
+	std::cout << std::endl;
+
+	// Warnings
+	std::cout << "WARNINGS~" << std::endl;
+	bool safe = true;
+
+	if (range - drift > 15 || range - drift < -15) {
+		std::cout << "Vehicle will land more than 15 meters from the launch site." << std::endl;
+		safe = false;
+	}
+
+	if (timeAPToDeploymentA <= 0) {
+		std::cout << "Parachute will deploy " << -1 * timeAPToDeploymentA << " seconds prior to reaching apogee." << std::endl;
+		safe = false;
+	}
+
+	if (altitudeMaxA < 15) {
+		std::cout << "Vehicle will not exceed 15 meters in altitude." << std::endl;
+		safe = false;
+	}
+	else if (altitudeMaxA > 2000) {
+		std::cout << "Vehicle will exceed 2000 meters in altitude." << std::endl;
+		safe = false;
+	}
+	else if (altitudeMaxA > 1000) {
+		std::cout << "Vehicle will exceed 1000 meters in altitude." << std::endl;
+		safe = false;
+	}
+	else if (altitudeMaxA > 650) {
+		std::cout << "Vehicle will exceed 650 meters in altitude." << std::endl;
+		safe = false;
+	}
+	else if (altitudeMaxA > 300) {
+		std::cout << "Vehicle will exceed 300 meters in altitude." << std::endl;
+		safe = false;
+	}
+
+	if (velocityMax > 340) {
+		std::cout << "Congratulations! Your vehicle will surpass Mach 1. But seriously, you might want to fix that." << std::endl;
+		safe = false;
+	}
+
+	if (safe){
+		std::cout << "No warnings." << std::endl;
+	}
+
 	std::cout << std::endl;
 
 	std::cout << "=====================================================================" << std::endl;
@@ -414,6 +478,7 @@ void Vehicle::performCalculations() {
 	calculateTimeDeploymentToGroundA();
 	calculateDeploymentVelocityA();
 	calculateTimeOfFlightA();
+	calculateDeploymentAltitudeA();
 
 	calculateRangeBoost();
 	calculateRangeCoast();
@@ -432,12 +497,16 @@ double Vehicle::calculateTimeMECOToAPA() {
 
 double Vehicle::calculateRange() {
 	range = rangeBoost + rangeCoast;
+	if (range < 0.00001)
+		range = 0;
 	return range;
 }
 
 // deploymentTime is measured in Mission Elapsed Time (time from launch).
 double Vehicle::calculateDrift() {
 	drift = deploymentAltitudeA / (parachute.landingVelocity / conditions.windspeed);
+	if (drift < 0.00001)
+		range = 0;
 	return drift;
 }
 
@@ -506,12 +575,12 @@ double Vehicle::calculateAltitudeMaxA() {
 
 double Vehicle::calculateDeploymentAltitudeA() {
 	calculateTimeAPToDeploymentA();
-
 	deploymentAltitudeA = altitudeMaxA - (0.5 * g * pow(timeAPToDeploymentA, 2)); // t^2
 	return deploymentAltitudeA;
 }
 
 double Vehicle::calculateTimeDeploymentToGroundA() {
+	calculateDeploymentAltitudeA();
 	timeDeploymentToGroundA = deploymentAltitudeA / parachute.landingVelocity; return timeDeploymentToGroundA;
 }
 

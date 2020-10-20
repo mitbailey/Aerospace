@@ -45,6 +45,7 @@ void displayHelp() {
 	std::cout << ".calculate parachute diameter - Uses the current parachute configuration to determine optimal diameter." << std::endl;
 	std::cout << ".calculate parachute velocity - Uses the current parachute configuration to determine landing velocity." << std::endl;
 	std::cout << ".calculate angle - Sets the launch angle to what will return the rocket to the launchsite." << std::endl;
+	std::cout << ".calculate area - Displays the area of a circle with the given diameter." << std::endl;
 	std::cout << ".update - Can be used to change a single value of a class." << std::endl;
 	std::cout << std::endl;
 
@@ -172,6 +173,15 @@ void displayHelp(std::string command) {
 		std::cout << "Optional... N/A" << std::endl;
 		std::cout << std::endl;
 	}
+	else if (command == "calculate area") {
+		std::cout << "Description: " << std::endl;
+		std::cout << "Displays the area of a circle with the given diameter." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Parameters: " << std::endl;
+		std::cout << "Required... <Diameter>" << std::endl;
+		std::cout << "Optional... N/A" << std::endl;
+		std::cout << std::endl;
+	}
 	else if (command == "calculate parachute diameter") {
 		std::cout << "Description: " << std::endl;
 		std::cout << "Uses the current parachute configuration to determine optimal diameter." << std::endl;
@@ -201,17 +211,19 @@ void displayHelp(std::string command) {
 		std::cout << "		pressure <value>" << std::endl;
 		std::cout << "		windspeed <value>" << std::endl;
 		std::cout << "	parachute" << std::endl;
+		std::cout << "		<diameter> <dragCoefficient> <landingVelocity> <deploymentTime>" << std::endl;
 		std::cout << "		diameter <value>" << std::endl;
 		std::cout << "		dragCoefficient <value>" << std::endl;
 		std::cout << "		landingVelocity <value>" << std::endl;
 		std::cout << "		deploymentTime <value>" << std::endl;
 		std::cout << "	engine" << std::endl;
+		std::cout << "		<impulse> <thrust> <burntime> <loaded mass> <propellant mass>" << std::endl;
 		std::cout << "		impulse <value>" << std::endl;
 		std::cout << "		thrust <value>" << std::endl;
 		std::cout << "		burntime <value>" << std::endl;
 		std::cout << "		mass" << std::endl;
 		std::cout << "			loaded <value>" << std::endl;
-		std::cout << "			empty <value>" << std::endl;
+		std::cout << "			propellant <value>" << std::endl;
 		std::cout << "	vehicle" << std::endl;
 		std::cout << "		area <value>" << std::endl;
 		std::cout << "		dragCoefficient <value>" << std::endl;
@@ -257,12 +269,6 @@ std::vector<std::string> tokenizer(std::string input) {
 	tokenizedInput.push_back(input.substr(0, position));
 	input.erase(0, position + delimiter.length());
 	position = input.find(delimiter);
-
-	/*
-	// Prints the contents of the vector for debugging purposes.
-	for (std::vector<std::string>::const_iterator i = tokenizedInput.begin(); i != tokenizedInput.end(); ++i)
-		std::cout << *i << ' ' << std::endl;
-	*/
 
 	return tokenizedInput;
 }
@@ -379,13 +385,13 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 		else if (tokens.at(1) == "angle") {
 			launchVehicle.calculateLaunchAngle();
 		}
+		else if (tokens.at(1) == "area") {
+			std::cout << "Area of circle with a diameter of " << stod(tokens.at(2)) << ": " << areaOfACircle(stod(tokens.at(2)));
+		}
 	}
 	else if (tokens.at(0) == ".update") {
 		if (tokens.at(1) == "conditions") {
-			if (tokens.size() == 2) {
-				launchVehicle.updateConditions(stod(tokens.at(3)), stod(tokens.at(4)));
-			}
-			else if (tokens.at(2) == "temperature") {
+			if (tokens.at(2) == "temperature") {
 				launchVehicle.updateTemperature(stod(tokens.at(3)));
 			}
 			else if (tokens.at(2) == "pressure") {
@@ -394,22 +400,38 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 			else if (tokens.at(2) == "windspeed") {
 				launchVehicle.updateWindspeed(stod(tokens.at(3)));
 			}
+			else {// At this point, assume the user is trying to change all values of .update at once.
+				if (tokens.size() == 5) { // .update conditions <temp> <pres> <wind>
+					launchVehicle.updateConditions(stod(tokens.at(3)), stod(tokens.at(4)), stod(tokens.at(5)));
+				}
+				else {
+					std::cout << "[userinterface.hpp/userInputHandler] ERROR: Values not updated, incorrect number of arguments." << std::endl;
+				}
+			}
 		}
 		else if (tokens.at(1) == "parachute") {
 			if (tokens.at(2) == "diameter") {
-				launchVehicle.parachute.updateDiamater(stod(tokens.at(2)));
+				launchVehicle.parachute.updateDiamater(stod(tokens.at(3)));
 				launchVehicle.parachute.calculateDescentSpeed(launchVehicle);
 			}
 			else if (tokens.at(2) == "dragCoefficient") {
-				launchVehicle.parachute.updateDragCoefficient(stod(tokens.at(2)));
+				launchVehicle.parachute.updateDragCoefficient(stod(tokens.at(3)));
 				launchVehicle.parachute.calculateDescentSpeed(launchVehicle);
 			}
 			else if (tokens.at(2) == "landingVelocity") {
-				launchVehicle.parachute.updateLandingVelocity(stod(tokens.at(2)));
+				launchVehicle.parachute.updateLandingVelocity(stod(tokens.at(3)));
 				launchVehicle.parachute.calculateDiameter(launchVehicle);
 			}
 			else if (tokens.at(2) == "deploymentTime") {
-				launchVehicle.parachute.updateDeploymentTime(stod(tokens.at(2)));
+				launchVehicle.parachute.updateDeploymentTime(stod(tokens.at(3)));
+			}
+			else {// At this point, assume the user is trying to change all values of .update at once.
+				if (tokens.size() == 6) { // .update parachute <> <> <> <>
+					launchVehicle.updateParachute(stod(tokens.at(3)), stod(tokens.at(4)), stod(tokens.at(5)), stod(tokens.at(6)));
+				}
+				else {
+					std::cout << "[userinterface.hpp/userInputHandler] ERROR: Values not updated, incorrect number of arguments." << std::endl;
+				}
 			}
 		}
 		else if (tokens.at(1) == "engine") {
@@ -426,8 +448,19 @@ bool userInputHandler(Conditions &weather, Vehicle &launchVehicle) {
 				if (tokens.at(3) == "loaded") {
 					launchVehicle.engine.mass.updateLoaded(stod(tokens.at(4)));
 				}
-				else if (tokens.at(3) == "empty") {
-					launchVehicle.engine.mass.updateEmpty(stod(tokens.at(4)));
+				//else if (tokens.at(3) == "empty") {
+				//	launchVehicle.engine.mass.updateEmpty(stod(tokens.at(4)));
+				//}
+				else if (tokens.at(3) == "propellant") {
+					launchVehicle.engine.mass.updateEmpty(launchVehicle.engine.mass.loaded - stod(tokens.at(4)));
+				}
+			}
+			else {// At this point, assume the user is trying to change all values of .update at once.
+				if (tokens.size() == 7) { // .update engine <impulse> <thrust> <burntime> <loaded> <propellant>
+					launchVehicle.updateEngine(stod(tokens.at(3)), stod(tokens.at(4)), stod(tokens.at(5)), stod(tokens.at(6)), stod(tokens.at(7)));
+				}
+				else {
+					std::cout << "[userinterface.hpp/userInputHandler] ERROR: Values not updated, incorrect number of arguments." << std::endl;
 				}
 			}
 		}
