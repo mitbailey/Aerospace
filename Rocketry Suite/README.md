@@ -48,6 +48,8 @@ Navigate to the install directory and run RocketrySuite.exe or search for it in 
 	.calculate parachute velocity - Uses the current parachute configuration to determine landing velocity.
   
 	.calculate angle - Sets the launch angle to what will return the rocket to the launchsite.
+	
+	.calculate area - Displays the area of a circle with the given diameter.
   
 	.update - Can be used to change a single value of a class.
   
@@ -60,6 +62,21 @@ Written in C++.
 See code folder for details.
 
 ### **Changelog**
+Version 2 Update 1  
+	Added Features  
+	- Provided area of a circle calculator.  
+	- Updaters to update all of the values of a particular thing at once, example: .update engine <val> <val> <val>  
+	- Added warnings to alert user of strange or dangerous results.
+	Fixed Bugs  
+	- Double print of average mass in current configuration.  
+	- Doesn't correctly calculate deployment altitude.  
+	- Update parachute command was using the penultimate argument, instead of the final argument, for the value, resulting in the program crashing. i.e. it would use 	"deploymentTime" instead of "7" when running the command .update parachute deploymentTime 7  
+	- Times for deployment-to-ground and total aloft displaying negative values.  
+	- Range and Drift values can be ridiculously close to zero (e-16), or negative zero. Should just round at that point.  
+	- Should detect if the parachute will deploy before reaching apogee (see warnings).  
+	- Always displays N/A for apogee to ground w/o parachute time.  
+	- Should be .update engine propellant <val> not .update engine mass empty <val>    
+	
 Version 2  
 	- Incorporates manual launch angle specification and adjusts all calculations accordingly.  
 	- Added calculation to find range (change in position from launchsite to parachute deployment).  
