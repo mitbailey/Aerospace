@@ -63,11 +63,12 @@ See code folder for details.
 
 ### **Changelog**
 Version 2 Update 1  
-	Added Features  
-	- Provided area of a circle calculator.  
-	- Updaters to update all of the values of a particular thing at once, example: .update engine <val> <val> <val>  
-	- Added warnings to alert user of strange or dangerous results.
-	Fixed Bugs  
+   Added Features  
+   	- Provided area of a circle calculator.  
+ 	- Updaters to update all of the values of a particular thing at once, example: .update engine <val> <val> <val>  
+	- Added warnings to alert user of strange or dangerous results.  
+	  
+   Fixed Bugs  
 	- Double print of average mass in current configuration.  
 	- Doesn't correctly calculate deployment altitude.  
 	- Update parachute command was using the penultimate argument, instead of the final argument, for the value, resulting in the program crashing. i.e. it would use 	"deploymentTime" instead of "7" when running the command .update parachute deploymentTime 7  
