@@ -1,2 +1,2 @@
 # Aerospace
-For Intro to Aerospace class.
+Originally for Intro to Aerospace class, contains the original RocketrySuite code.
